@@ -9,7 +9,7 @@ int main() {
 	ThreadPool pool(4);
 
 	// enqueue and store future
-	auto result = pool.Enqueue([](int answer) { return answer; }, 42);
+	auto result = pool.ReturnEnqueue([](int answer) { return answer; }, 42);
 
 	// get result from future
 	std::cout << result.get() << std::endl;

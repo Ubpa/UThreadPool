@@ -16,9 +16,14 @@ namespace Ubpa {
         ThreadPool(size_t num);
         ~ThreadPool();
 
-        // return future
+        // return std::future
         template<class F, class... Args>
-        auto Enqueue(F&& f, Args&&... args);
+        auto ReturnEnqueue(F&& f, Args&&... args);
+
+        template<class F, class... Args>
+        void Enqueue(F&& f, Args&&... args);
+
+        void BasicEnqueue(unique_function<void()> task);
 
     private:
         std::vector<std::thread> workers;

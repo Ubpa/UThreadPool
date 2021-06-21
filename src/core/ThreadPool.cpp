@@ -22,9 +22,21 @@ ThreadPool::ThreadPool(size_t num) {
     }
 }
 
+void ThreadPool::BasicEnqueue(unique_function<void()> task) {
+    {
+        std::lock_guard<std::mutex> lock(mutex_tasks);
+
+        if (stop)
+            throw std::runtime_error("enqueue on stopped ThreadPool");
+
+        tasks.push(std::move(task));
+    }
+    condition.notify_one();
+}
+
 ThreadPool::~ThreadPool() {
     {
-        std::unique_lock<std::mutex> lock(mutex_tasks);
+        std::lock_guard<std::mutex> lock(mutex_tasks);
         stop = true;
     }
     condition.notify_all();
